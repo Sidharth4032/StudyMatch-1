@@ -3,6 +3,7 @@ const express = require("express");
 const morgan = require("morgan");
 const mysql = require("mysql2");
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
 
@@ -11,6 +12,9 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(morgan("dev"));
+
+// JWT Secret
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Rate limit configuration
 const limiter = rateLimit({
@@ -21,7 +25,7 @@ const limiter = rateLimit({
 // Apply rate limiting to all requests
 app.use(limiter);
 
-// Using environment variables for database configuration
+// Database configuration
 const dbConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -44,7 +48,7 @@ app.get("/ping", (req, res) => {
   return res.send({ status: "Healthy" });
 });
 
-// Passwords are hashed before being stored in the database.
+// User registration
 app.post("/register", [
   body('username').isLength({ min: 3 }).trim().escape(),
   body('password').isLength({ min: 5 })
@@ -55,18 +59,30 @@ app.post("/register", [
   }
 
   const { username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10); 
-  const query = "INSERT INTO users (username, password) VALUES (?, ?)";
-  pool.query(query, [username, hashedPassword], (err) => {
+  // Check if user already exists
+  pool.query("SELECT * FROM users WHERE username = ?", [username], async (err, results) => {
     if (err) {
       console.error("Error executing MySQL query:", err);
       return res.status(500).send("Database error");
     }
-    res.send({ status: "User registered successfully!" });
+
+    if (results.length > 0) {
+      return res.status(400).send("Username already taken");
+    } else {
+      const hashedPassword = await bcrypt.hash(password, 10); 
+      const query = "INSERT INTO users (username, password) VALUES (?, ?)";
+      pool.query(query, [username, hashedPassword], (err) => {
+        if (err) {
+          console.error("Error executing MySQL query:", err);
+          return res.status(500).send("Database error");
+        }
+        res.send({ status: "User registered successfully!" });
+      });
+    }
   });
 });
 
-// Password is verified against its hashed version in the database.
+// User login
 app.post("/login", [
   body('username').trim().escape(),
   body('password').exists()
@@ -87,8 +103,35 @@ app.post("/login", [
     if (results.length === 0 || !(await bcrypt.compare(password, results[0].password))) {
       return res.status(401).send("Invalid username or password");
     }
-    res.send({ status: "Login successful!" });
+
+    // Generate JWT Token
+    const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1h' });
+    res.send({ status: "Login successful!", token });
   });
+});
+
+// JWT verification middleware
+function verifyToken(req, res, next) {
+  const bearerHeader = req.headers['authorization'];
+  if (typeof bearerHeader !== 'undefined') {
+    const bearerToken = bearerHeader.split(' ')[1];
+    req.token = bearerToken;
+    jwt.verify(req.token, JWT_SECRET, (err, authData) => {
+      if (err) {
+        res.sendStatus(403);
+      } else {
+        req.authData = authData;
+        next();
+      }
+    });
+  } else {
+    res.sendStatus(401);
+  }
+}
+
+// Trying to implement a protected route
+app.get("/protected", verifyToken, (req, res) => {
+  res.json({ message: "This is a protected route", user: req.authData });
 });
 
 app.use((err, req, res, next) => {
