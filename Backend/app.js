@@ -59,7 +59,6 @@ app.post("/register", [
   }
 
   const { username, password } = req.body;
-  // Check if user already exists
   pool.query("SELECT * FROM users WHERE username = ?", [username], async (err, results) => {
     if (err) {
       console.error("Error executing MySQL query:", err);
@@ -93,8 +92,7 @@ app.post("/login", [
   }
 
   const { username, password } = req.body;
-  const query = "SELECT password FROM users WHERE username = ?";
-  pool.query(query, [username], async (err, results) => {
+  pool.query("SELECT password FROM users WHERE username = ?", [username], async (err, results) => {
     if (err) {
       console.error("Error executing MySQL query:", err);
       return res.status(500).send("Database error");
@@ -104,34 +102,44 @@ app.post("/login", [
       return res.status(401).send("Invalid username or password");
     }
 
-    // Generate JWT Token
     const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1h' });
     res.send({ status: "Login successful!", token });
   });
 });
 
-// JWT verification middleware
+// Improved JWT verification middleware
 function verifyToken(req, res, next) {
   const bearerHeader = req.headers['authorization'];
-  if (typeof bearerHeader !== 'undefined') {
-    const bearerToken = bearerHeader.split(' ')[1];
-    req.token = bearerToken;
-    jwt.verify(req.token, JWT_SECRET, (err, authData) => {
-      if (err) {
-        res.sendStatus(403);
-      } else {
-        req.authData = authData;
-        next();
-      }
-    });
-  } else {
-    res.sendStatus(401);
+
+  if (!bearerHeader) {
+    return res.status(401).send({ error: "Access denied. No token provided." });
   }
+
+  const token = bearerHeader.split(' ')[1];
+
+  if (!token || token.split('.').length !== 3) {
+    return res.status(401).send({ error: "Invalid token format." });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) {
+      if (err.name === 'TokenExpiredError') {
+        return res.status(401).send({ error: "Token expired. Please log in again." });
+      } else if (err.name === 'JsonWebTokenError') {
+        return res.status(401).send({ error: "Invalid token. Please log in again." });
+      } else {
+        return res.status(401).send({ error: "Failed to authenticate token." });
+      }
+    }
+
+    req.user = decoded;
+    next();
+  });
 }
 
-// Trying to implement a protected route
+// Protected route
 app.get("/protected", verifyToken, (req, res) => {
-  res.json({ message: "This is a protected route", user: req.authData });
+  res.json({ message: "This is a protected route", user: req.user });
 });
 
 app.use((err, req, res, next) => {
