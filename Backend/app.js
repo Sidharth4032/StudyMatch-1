@@ -92,6 +92,13 @@ app.post("/login", [
     return res.status(400).json({ errors: errors.array() });
   }
 
+  if (utils.isValidEmail('test@example.com')) {
+    console.log('Valid email address.');
+} else {
+    console.log('Invalid email address.');
+}
+  utils.logToFile('Server started.');
+
   const { username, password } = req.body;
   pool.query("SELECT password FROM users WHERE username = ?", [username], async (err, results) => {
     if (err) {
