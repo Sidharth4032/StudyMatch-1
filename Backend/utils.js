@@ -1,6 +1,7 @@
-// utils.js
+javascript
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 /**
  * Validates email format.
@@ -69,11 +70,60 @@ const sanitizeInput = (input) => {
     });
 };
 
-// Export the utility functions
-module.exports = {
-    isValidEmail,
-    isStrongPassword,
-    logToFile,
-    generateRandomString,
-    sanitizeInput
+/**
+ * Encrypts text using AES algorithm.
+ * @param {string} text - Text to be encrypted.
+ * @param {string} secretKey - Secret key for encryption.
+ * @returns {string} Encrypted text.
+ */
+const encryptText = (text, secretKey) => {
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv('aes-256-ctr', secretKey, iv);
+    const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
+    return iv.toString('hex') + ':' + encrypted.toString('hex');
 };
+
+/**
+ * Decrypts text using AES algorithm.
+ * @param {string} text - Text to be decrypted.
+ * @param {string} secretKey - Secret key for decryption.
+ * @returns {string} Decrypted text.
+ */
+const decryptText = (text, secretKey) => {
+    const parts = text.split(':');
+    const iv = Buffer.from(parts.shift(), 'hex');
+    const encryptedText = Buffer.from(parts.join(':'), 'hex');
+    const decipher = crypto.createDecipheriv('aes-256-ctr', secretKey, iv);
+    const decrypted = Buffer.concat([decipher.update(encryptedText), decipher.final()]);
+    return decrypted.toString();
+};
+
+/**
+ * Generates a secure hash from a string.
+ * @param {string} data - Data to hash.
+ * @returns {string} The resulting hash.
+ */
+const generateHash = (data) => {
+    return crypto.createHash('sha256').update(data).digest('hex');
+};
+
+/**
+ * Compares a raw string to a hash to check if they match.
+ * @param {string} raw - Raw string.
+ * @param {string} hash - Hash to compare to.
+ * @returns {boolean} True if they match, otherwise false.
+ */
+const compareHash = (raw, hash) => {
+    const generatedHash = generateHash(raw);
+    return generatedHash === hash;
+};
+
+/**
+ * Converts a date to a formatted string.
+ * @param {Date} date - The date to format.
+ * @returns {string} Formatted date string.
+ */
+const formatDate = (date) => {
+    return date.toISOString().split('T')[0];
+};
+
