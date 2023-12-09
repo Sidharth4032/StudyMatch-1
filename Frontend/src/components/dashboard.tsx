@@ -30,6 +30,29 @@ function UserDashboard() {
     <div>
       <h2>User Dashboard</h2>
       <h3>Welcome, {user.name}!</h3>
+      <section>
+        <h4>Profile</h4>
+        <img src={user.profilePic} alt={`${user.name}'s profile`} />
+        <p><strong>Email:</strong> {user.email}</p>
+        <p><strong>Bio:</strong> {user.bio}</p>
+      </section>
+
+      <section>
+        <h4>Performance Metrics</h4>
+        <p><strong>Total Study Sessions:</strong> {user.totalSessions}</p>
+        <p><strong>Total Study Hours:</strong> {user.totalHours}</p>
+        <p><strong>Progress in Math:</strong> {user.progress.Math}%</p>
+        {/* Repeat for other subjects */}
+      </section>
+
+      <section>
+        <h4>Notifications</h4>
+        {user.notifications.map((notification, index) => (
+          <p key={index}>{notification.message}</p>
+        ))}
+      </section>
+
+
 
       {/* Display upcoming study sessions */}
       <section>

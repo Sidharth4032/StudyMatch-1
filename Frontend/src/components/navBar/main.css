@@ -1,0 +1,139 @@
+.nav-container {
+    background-color: white;
+    color: gray;
+    min-height: 60px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    align-items: center;
+    display: flex;
+  }
+  
+  .nav-container-dark {
+    background-color: #1a202c;
+    color: white;
+    border-color: #2d3748;
+  }
+  
+  .nav-flex {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .nav-logo {
+    height: 40px;
+    margin-right: 16px;
+  }
+  
+  .nav-brand-name {
+    font-family: 'Arial', sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2d3748;
+    text-align: left;
+  }
+  
+  .desktop-nav {
+    display: flex;
+    margin-left: 40px;
+  }
+  
+  .desktop-nav-item {
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: gray;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .desktop-nav-item:hover {
+    color: #2d3748;
+  }
+  
+  .sub-nav {
+    position: relative;
+  }
+  
+  .sub-nav-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 16px;
+    display: none;
+  }
+  
+  .sub-nav-item {
+    padding: 8px 12px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .sub-nav-item:hover {
+    background-color: #edf2f7;
+  }
+  
+  .sub-nav:hover .sub-nav-content {
+    display: block;
+  }
+  
+  .mobile-nav {
+    display: none;
+    flex-direction: column;
+  }
+  
+  .mobile-nav-item {
+    padding: 12px 16px;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .mobile-nav-item:first-child {
+    border-top: none;
+  }
+  
+  .nav-button {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .nav-button-signin {
+    background-color: transparent;
+    color: #2d3748;
+  }
+  
+  .nav-button-signup {
+    background-color: #ed64a6;
+    color: white;
+  }
+  
+  .nav-button-signup:hover {
+    background-color: #d53f8c;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .nav-flex {
+      flex-direction: column;
+    }
+  
+    .desktop-nav {
+      display: none;
+    }
+  
+    .mobile-nav {
+      display: flex;
+    }
+  
+    .nav-brand-name {
+      text-align: center;
+    }
+  }

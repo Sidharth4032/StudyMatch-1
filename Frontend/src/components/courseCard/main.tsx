@@ -1,4 +1,5 @@
 import React from "react";
+import './main.css';
 import { Box, Flex, Link, chakra } from "@chakra-ui/react";
 
 import { AiOutlineLink } from "react-icons/ai";

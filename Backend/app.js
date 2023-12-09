@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require("express");
 const morgan = require("morgan");
 const mysql = require("mysql2");
@@ -11,8 +10,12 @@ const utils = require('./utils');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
+// set security HTTP headers
+app.use(helmet());
+
+// parse json request body
 app.use(express.json());
-app.use(morgan("dev"));
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
@@ -87,3 +90,26 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => console.log("Server started listening on port:", PORT));
+// parse urlencoded requnpst body
+app.use(express.urlencoded({ extended: true }));
+
+
+
+// enable cors
+app.use(cors());
+app.options('*', cors());
+
+
+// v1 api routes
+app.use('/v1', routes);
+
+
+app.use((req, res) => {
+  res.status(404).json({ message: "Resource not found" });
+});
+
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`)
+})
+
+module.exports = app;

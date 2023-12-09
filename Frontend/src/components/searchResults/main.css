@@ -1,0 +1,23 @@
+.search-results {
+    margin: 20px auto;
+    max-width: 600px;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .search-result-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  
+  .search-result-item h3 {
+    margin-top: 0;
+  }
+  
+  .search-result-item p {
+    margin: 5px 0;
+  }
+  

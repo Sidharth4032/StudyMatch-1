@@ -1,0 +1,40 @@
+/* General Styles */
+.availability-schedule {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .availability-schedule h2 {
+    margin-bottom: 15px;
+    color: #333;
+    text-align: center;
+  }
+  
+  .availability-schedule ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .availability-schedule li {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .availability-schedule li:hover {
+    background-color: #e9ecef;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .availability-schedule strong {
+    color: #007bff;
+  }
+  

@@ -1,0 +1,70 @@
+/* General Styles for the Help Page */
+.help-page {
+    margin: 2rem;
+    text-align: left;
+    font-family: 'Arial', sans-serif;
+    color: #333; 
+    line-height: 1.6; 
+    max-width: 800px; 
+    margin: 2rem auto; 
+  }
+  
+  /* Title Styles */
+  .help-page h1 {
+    text-align: center;
+    color: #646cff;
+    margin-bottom: 2rem;
+  }
+  
+  /* Section Headings */
+  .help-page h2 {
+    color: #61dafb; /* Secondary color */
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem; 
+    margin-bottom: 1rem; 
+  }
+  
+  /* FAQ Styles */
+  .faq-section .faq h3 {
+    font-weight: bold;
+    color: #646cff; /* Primary color */
+    cursor: pointer;
+  }
+  
+  .faq-section .faq p {
+    background-color: #f9f9f9; 
+    padding: 1rem; 
+    border-left: 4px solid #646cff; 
+    margin-top: 0.5rem; 
+    display: none;
+  }
+  
+  /* Contact Section */
+  .contact-section p {
+    margin-top: 0.5rem;
+    font-style: italic; 
+  }
+  
+  /* Additional Resources */
+  .additional-resources a {
+    display: block; 
+    margin-bottom: 0.5rem;
+    color: #646cff; /* Primary color */
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .additional-resources a:hover {
+    text-decoration: underline; 
+    color: #5558ff; 
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .help-page {
+      padding: 1rem;
+      margin: 1rem;
+    }
+  }
+  
+  
